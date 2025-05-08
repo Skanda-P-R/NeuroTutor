@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Code Checker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_code.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="editor-container">
+            <h1><a href="/">Python Code Checker</a></h1>
+            <div class="editor-header">
+                <div class="editor-title">Code Editor</div>
+                <div class="button-container">
+                    <button class="button" id="check-errors">
+                        <i class="fa fa-check"></i> CHECK ERRORS
+                    </button>
+                    <button class="button" id="correct-code">
+                        <i class="fa fa-magic"></i> CORRECT CODE
+                    </button>
+                </div>
+            </div>
+            <textarea id="code-editor">
+# Enter your Python code here
+def example_function():
+    print("Hello, world!")
+    retrun 42  # Intentional typo for testing
+            </textarea>
+        </div>
+
+        <div class="output-container">
+            <div class="output-header">
+                <div class="output-title">Output</div>
+                <div class="tabs">
+                    <div class="tab active" data-tab="errors">Errors</div>
+                    <div class="tab" data-tab="corrected">Corrected Code</div>
+                </div>
+            </div>
+            <div class="tab-content active" id="errors-content">
+                <div id="errors-output" class="output-text">Errors will appear here...</div>
+            </div>
+            <div class="tab-content" id="corrected-content">
+                <div id="corrected-output" class="output-text">Corrected code will appear here...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="{{ url_for('static', filename='script_code.js') }}"></script>
+</body>
+
+</html>

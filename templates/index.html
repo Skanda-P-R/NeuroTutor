@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Select Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_main.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Select a Tool</h1>
+        <div class="button-container">
+            <button class="button level-button" id="code-checker-btn" onclick="window.location.href='/code-checker'">
+                🧪 Python Code Checker
+            </button>
+            <button class="button level-button" id="debugger-btn" onclick="window.location.href='/debugger-challenge'">
+                🐞 Debugger Challenge
+            </button>
+            <button class="button level-button" onclick="window.location.href='/logout'" id="logout-btn">
+                🚪 Logout
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

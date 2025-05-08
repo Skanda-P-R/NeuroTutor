@@ -1,0 +1,147 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    background-image: url("/static/bg.svg");
+    background-repeat: repeat-y;
+    background-size: cover;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+h1 a {
+    color: #333;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.editor-container,
+.output-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.editor-header,
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.editor-title,
+.output-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+.button i {
+    font-size: 18px;
+}
+
+#check-errors {
+    background-color: #c54022;
+}
+
+#check-errors:hover {
+    background-color: #af3a23;
+}
+
+#correct-code {
+    background: linear-gradient(180deg, #44bbdd 0%, #30a5c6 65%, #129abc 100%);
+}
+
+#correct-code:hover {
+    background: linear-gradient(180deg, #3aaac9 0%, #2798b1 65%, #0e7f9d 100%);
+}
+
+#output-container {
+    white-space: pre-wrap;
+    font-family: monospace;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    margin-right: 5px;
+}
+
+.tab.active {
+    background-color: white;
+    border-bottom: 1px solid white;
+    margin-bottom: -1px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.CodeMirror {
+    height: 400px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.output-text {
+    white-space: pre-wrap;
+}
+
+.code-box {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 12px 0;
+    overflow-x: auto;
+    font-family: Consolas, monospace;
+}

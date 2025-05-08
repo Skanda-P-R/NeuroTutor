@@ -1,0 +1,101 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    background-image: url("/static/bg.svg");
+    background-size: cover;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+h1 a {
+    color: #333;
+    text-align: center;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.button i {
+    font-size: 18px;
+}
+
+.level-button#easy-btn {
+    background-color: #4caf50;
+}
+
+.level-button#easy-btn:hover {
+    background-color: #3e8e41;
+}
+
+.level-button#medium-btn {
+    background-color: #ff9800;
+}
+
+.level-button#medium-btn:hover {
+    background-color: #e68900;
+}
+
+.level-button#hard-btn {
+    background-color: #f44336;
+}
+
+.level-button#hard-btn:hover {
+    background-color: #d32f2f;
+}
+
+.submit-button {
+    background: linear-gradient(180deg, #44bbdd 0%, #30a5c6 65%, #129abc 100%);
+    margin-top: 20px;
+}
+
+.submit-button:hover {
+    background: linear-gradient(180deg, #3aaac9 0%, #2798b1 65%, #0e7f9d 100%);
+}
+
+.editor-section {
+    margin: 20px 0;
+}
+
+.CodeMirror {
+    height: 200px;
+    border: 1px solid #ddd;
+}
+
+#result-display {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}

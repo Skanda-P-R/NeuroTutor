@@ -1,0 +1,55 @@
+import os
+import json  # Unused
+import sys   # Unused
+
+class Calculator:
+    def __init__(self, mode="add"):
+        self.mode = mode
+        self.history = []
+
+    def calculate(self, a, b):
+        if self.mode == "add":
+            return a + b
+        elif self.mode == "subtract":
+            return a - b
+        elif self.mode == "divide":
+            return a / b
+        else:
+            return None
+
+    def unused_method(self):
+        print("I am never called!")
+
+def do_math(x, y, cache={}):  # Mutable default arg!
+    if x in cache:
+        return cache[x]
+    result = x + y
+    cache[x] = result
+    return result
+
+def main():
+    calc = Calculator("multiply")  # Invalid mode
+    output = calc.calculate(10, number)  # 'number' is undefined
+    print("Output:", output)
+
+def unreachable():
+    return
+    print("This will never run")
+
+def infinite_loop():
+    while True:
+        pass
+    print("Unreachable code after infinite loop.")
+
+def outer_function():
+    a = 5
+    def inner_function():
+        b = 10
+        return a + b
+    inner_function()
+
+def another_function():
+    c = 20  # Unused variable
+
+
+main()

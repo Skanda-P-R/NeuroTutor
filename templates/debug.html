@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Debugging Challenge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_debug.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1><a href="/">Code Debugging Challenge</a></h1>
+
+        <div class="button-container">
+            <button class="button level-button" id="easy-btn" onclick="loadCode('easy')"><i class="fa fa-leaf"></i>
+                Easy</button>
+            <button class="button level-button" id="medium-btn" onclick="loadCode('medium')"><i class="fa fa-cogs"></i>
+                Medium</button>
+            <button class="button level-button" id="hard-btn" onclick="loadCode('hard')"><i class="fa fa-fire"></i>
+                Hard</button>
+        </div>
+
+        <div class="editor-section">
+            <h2>Error Code will appear here...</h2>
+            <textarea id="error-code-editor"></textarea>
+        </div>
+
+        <div class="editor-section">
+            <h2>Your Corrected Code</h2>
+            <textarea id="user-code-editor"></textarea>
+        </div>
+
+        <button class="button submit-button" id="submit-btn"><i class="fa fa-paper-plane"></i> Submit</button>
+
+        <div id="result-display"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="{{ url_for('static', filename='script_debug.js') }}"></script>
+</body>
+
+</html>
