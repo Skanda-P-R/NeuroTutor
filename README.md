@@ -49,8 +49,8 @@
 ## 🛠️ Setup Instructions
 ### 1. Clone the Repository
 ```
-git clone https://github.com/yourusername/neurotutor.git
-cd neurotutor
+git clone https://github.com/Skanda-P-R/NeuroTutor.git
+cd NeuroTutor
 ```
 ### 2. Install Dependencies
 ```
@@ -107,4 +107,4 @@ Feel free to fork this repo and submit pull requests. For major changes, open an
 ---
 
 ## 📃 License
-This project is licensed under the MIT License. See the [LICENSE]() file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/Skanda-P-R/NeuroTutor/blob/main/LICENSE) file for details.
