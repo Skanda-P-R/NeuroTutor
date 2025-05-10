@@ -15,7 +15,12 @@
 <body>
     <div class="container">
         <h1><a href="/">Code Debugging Challenge</a></h1>
-
+        <div style="margin-bottom: 15px;">
+            <a href="{{ url_for('index') }}">
+                <button class="button level-button" id="home-btn"><i class="fa fa-home"></i>
+                    Home</button>
+            </a>
+        </div>
         <div class="button-container">
             <button class="button level-button" id="easy-btn" onclick="loadCode('easy')"><i class="fa fa-leaf"></i>
                 Easy</button>

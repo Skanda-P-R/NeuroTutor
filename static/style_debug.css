@@ -75,6 +75,15 @@ h1 a {
     background-color: #d32f2f;
 }
 
+.level-button#home-btn {
+    background-color: red;
+    color: white;
+}
+
+.level-button#home-btn:hover {
+    background-color: darkred;
+}
+
 .submit-button {
     background: linear-gradient(180deg, #44bbdd 0%, #30a5c6 65%, #129abc 100%);
     margin-top: 20px;

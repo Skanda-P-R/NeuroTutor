@@ -6,6 +6,8 @@ import MySQLdb.cursors
 from groq_api_debug import get_code, compare
 from symbolic_debugger import analyze_script, get_debugged_code
 import os
+from datetime import datetime, timedelta
+import pytz
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
@@ -17,10 +19,67 @@ app.config['MYSQL_DB'] = 'neuro_tutor_db'
 
 mysql = MySQL(app)
 
+ALL_MILESTONES = {
+    "codes_corrected": {
+        5: "Code Fixer I",
+        10: "Code Fixer II",
+        20: "Syntax Surgeon"
+    },
+    "coins": {
+        1: "First Login",
+        5: "Coin Collector I",
+        10: "Coin Collector II",
+        25: "Coin Collector III"
+    },
+    "questions_debugged": {
+        1: "First Debug",
+        5: "Debug Mastery I",
+        10: "Debug Mastery II",
+        25: "Bug Slayer"
+    }
+}
+
+def assign_badges(email):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT id, questions_debugged, codes_corrected, coins FROM users WHERE email = %s", (email,))
+    user = cursor.fetchone()
+    user_id = user['id']
+    codes_corrected = user['codes_corrected']
+    questions_debugged = user.get('questions_debugged', 0)
+    coins = user['coins']
+    badge_to_show = None
+
+    for field, milestones in ALL_MILESTONES.items():
+        current_value = user[field]
+        for milestone, badge_name in milestones.items():
+            if current_value >= milestone:
+                cursor.execute("SELECT id FROM badges WHERE name = %s", (badge_name,))
+                cursor.execute("SELECT id, name, description, icon_filename FROM badges WHERE name = %s", (badge_name,))
+                badge = cursor.fetchone()
+
+                if badge:
+                    badge_id = badge['id']
+                    cursor.execute("SELECT * FROM user_badges WHERE user_id = %s AND badge_id = %s", (user_id, badge_id))
+                    if not cursor.fetchone():
+                        cursor.execute("INSERT INTO user_badges (user_id, badge_id, awarded_on) VALUES (%s, %s, NOW())",
+                                       (user_id, badge_id))
+                        mysql.connection.commit()
+                        badge_to_show = badge
+                        break
+        if badge_to_show:
+            break
+    return badge_to_show
+
 @app.route('/')
 def index():
     if 'email' in session:
-        return render_template('index.html')
+        email = session['email']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT coins FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        coins = user['coins']
+        badge_to_show = assign_badges(email)
+        return render_template('index.html', coins=coins, badge_to_show=badge_to_show)
     return redirect('/login')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -35,6 +94,24 @@ def login():
 
         if user and check_password_hash(user['password'], password):
             session['email'] = user['email']
+
+            ist = pytz.timezone('Asia/Kolkata')
+            now = datetime.now(ist)
+            if now.hour < 5:
+                today_5am = now.replace(hour=5, minute=0, second=0, microsecond=0) - timedelta(days=1)
+            else:
+                today_5am = now.replace(hour=5, minute=0, second=0, microsecond=0)
+
+            last_award = user.get('last_coin_award')
+            if last_award and not last_award.tzinfo:
+                last_award = ist.localize(last_award)
+            if not last_award or last_award < today_5am:
+                cursor.execute("""
+                    UPDATE users 
+                    SET coins = coins + 1, last_coin_award = %s 
+                    WHERE email = %s
+                """, (now, email))
+                mysql.connection.commit()
             return redirect('/')
         else:
             error = 'Incorrect email or password!'
@@ -80,6 +157,26 @@ def code_checker():
 def debugger_challenge():
     if 'email' in session:
         return render_template("debug.html")
+    return redirect('/login')
+
+@app.route('/my-badges')
+def my_badges():
+    if 'email' in session:
+        email = session['email']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT id, coins FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        user_id = user['id']
+        coins = user['coins']
+        cursor.execute("""
+            SELECT b.name AS title, b.description, b.icon_filename, ub.awarded_on
+            FROM user_badges ub
+            JOIN badges b ON ub.badge_id = b.id
+            WHERE ub.user_id = %s
+            ORDER BY ub.awarded_on DESC
+        """, (user_id,))
+        badges = cursor.fetchall()
+        return render_template('my_badges.html', badges=badges, coins=coins)
     return redirect('/login')
 
 @app.route("/get_code", methods=["POST"])

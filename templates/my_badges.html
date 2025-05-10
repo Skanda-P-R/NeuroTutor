@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Badges</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_my_badges.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
+
+<body>
+    <div class="coin-display">
+        💰 Coins: {{ coins }}
+    </div>
+    <div class="container">
+        <div class="badges-container">
+            <h1><u>Your Badges</u></h1>
+            <div style="margin-bottom: 15px;">
+                <a href="{{ url_for('index') }}">
+                    <button class="button level-button" id="home-btn"><i class="fa fa-home"></i>
+                        Home</button>
+                </a>
+            </div>
+
+            {% if badges %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Icon</th>
+                        <th>Badge Title</th>
+                        <th>Description</th>
+                        <th>Date Awarded</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for badge in badges %}
+                    <tr>
+                        <td>
+                            <img src="{{ url_for('static', filename='images/' + badge['icon_filename']) }}" alt="Icon"
+                                class="badge-img" data-toggle="modal" data-target="#badgeModal"
+                                onclick="showBadgeModal(this.src)">
+                        </td>
+                        <td>{{ badge['title'] }}</td>
+                        <td>{{ badge['description'] }}</td>
+                        <td>{{ badge['awarded_on'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>You have not been awarded any badges yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="modal fade" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Badge" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showBadgeModal(src) {
+            document.getElementById('modalImage').src = src;
+        }
+    </script>
+</body>
+
+</html>

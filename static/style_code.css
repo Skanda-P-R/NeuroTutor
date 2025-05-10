@@ -86,6 +86,15 @@ h1 a {
     background: linear-gradient(180deg, #3aaac9 0%, #2798b1 65%, #0e7f9d 100%);
 }
 
+.level-button#home-btn {
+    background-color: red;
+    color: white;
+}
+
+.level-button#home-btn:hover {
+    background-color: darkred;
+}
+
 #output-container {
     white-space: pre-wrap;
     font-family: monospace;

@@ -8,6 +8,29 @@
 </head>
 
 <body>
+    <div class="coin-display">
+        💰 Coins: {{ coins }}
+    </div>
+    {% if badge_to_show and 'icon_filename' in badge_to_show %}
+    <div class="backdrop" id="backdrop" style="display: block;" onclick="closePopup()"></div>
+    <div class="badge-popup" id="badge-popup" style="display: block;">
+        <img src="{{ url_for('static', filename='images/' + badge_to_show['icon_filename']) }}"
+            alt="{{ badge_to_show['name'] }}">
+        <h2>🏅 Badge Unlocked: {{ badge_to_show['name'] }}</h2>
+        <p>{{ badge_to_show['description'] }}</p>
+        <div class="button-container">
+            <a href="/" class="btn">Okay</a>
+            <a href="/my-badges" class="btn">View Badges</a>
+        </div>
+    </div>
+    <script>
+        function closePopup() {
+            document.getElementById('badge-popup').style.display = 'none';
+            document.getElementById('backdrop').style.display = 'none';
+        }
+    </script>
+    {% endif %}
+
     <div class="container">
         <h1>Select a Tool</h1>
         <div class="button-container">
@@ -16,6 +39,9 @@
             </button>
             <button class="button level-button" id="debugger-btn" onclick="window.location.href='/debugger-challenge'">
                 🐞 Debugger Challenge
+            </button>
+            <button class="button level-button" id="my-badges-btn" onclick="window.location.href='/my-badges'">
+                🏆 My Badges
             </button>
             <button class="button level-button" onclick="window.location.href='/logout'" id="logout-btn">
                 🚪 Logout
