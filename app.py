@@ -106,11 +106,8 @@ def check_solution():
 @app.route('/check_errors', methods=['POST'])
 def check_errors():
     code_text = request.json.get('code', '')
-    try:
-        errors = analyze_script(code_text)
-        return jsonify({'errors': errors})
-    except Exception as e:
-        return jsonify({'errors': [f"Error in error checking: {str(e)}"]})
+    errors = analyze_script(code_text)
+    return jsonify({'errors': errors})
 
 @app.route('/correct_code', methods=['POST'])
 def correct_code():

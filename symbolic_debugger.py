@@ -114,17 +114,25 @@ class SymbolicAnalyzer(ast.NodeVisitor):
         return report
 
 def analyze_script(source_code):
-    tree = ast.parse(source_code)
-    analyzer = SymbolicAnalyzer()
-    analyzer.visit(tree)
-    issues = analyzer.analyze()
     issues_arr = []
-    if issues:
-        issues_arr.append("🚨 Issues Found:")
-        for issue in issues:
-            issues_arr.append(f" - {issue}")
-    return issues_arr
 
+    try:
+        tree = ast.parse(source_code)
+        analyzer = SymbolicAnalyzer()
+        analyzer.visit(tree)
+        issues = analyzer.analyze()
+
+        if issues:
+            issues_arr.append("🚨 Issues Found:")
+            for issue in issues:
+                issues_arr.append(f" - {issue}")
+
+    except SyntaxError as e:
+        issues_arr.append("🚨 Syntax Error:")
+        issues_arr.append(f" - {e.msg} at line {e.lineno}, column {e.offset}")
+        issues_arr.append(f" - Line: {e.text.strip()}" if e.text else "")
+
+    return issues_arr
 
 def get_debugged_code(issues,source_code):
     return send_to_groq(source_code,issues)
