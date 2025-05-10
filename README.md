@@ -11,6 +11,7 @@
 - 🧪 **Code Error Detection**
 - 🔧 **Automatic Code Correction**
 - 📊 **Progress Tracking** (questions debugged & codes corrected)
+- 🏅 **Badge System** (Generates badges to users based on tasks completed)
 
 ---
 
@@ -43,7 +44,6 @@
 │   └── script.js
 ├── groq_api_debug.py        # Challenge code generator & comparison logic
 ├── symbolic_debugger.py     # Code analysis and correction
-├── groq_api.py              # Correct code generator based on Errors
 ├── LICENSE
 ├── README.md
 ```
@@ -179,12 +179,12 @@ This project is licensed under the MIT License. See the [LICENSE](https://github
 
 <details>
 <summary>🔐 Login Page</summary>
-<p align="center"><img src="Images/Login_page.png" width="400"/></p>
+<p align="center"><img src="Images/Login_Page.png" width="400"/></p>
 </details>
 
 <details>
 <summary>📝 Register Page</summary>
-<p align="center"><img src="Images/Register_page.png" width="400"/></p>
+<p align="center"><img src="Images/Register_Page.png" width="400"/></p>
 </details>
 
 <details>

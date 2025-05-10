@@ -1,5 +1,5 @@
 import ast
-from groq_api import send_to_groq
+from groq_api_debug import send_to_groq
 
 class SymbolicAnalyzer(ast.NodeVisitor):
     def __init__(self):
