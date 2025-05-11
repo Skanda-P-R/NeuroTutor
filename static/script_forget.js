@@ -51,7 +51,8 @@ submitButton.addEventListener("click", () => {
         .then(data => {
             const feedbackEl = document.getElementById("submission-feedback");
             feedbackEl.innerHTML = `<p>💡 <strong>Score:</strong> ${data.score}</p><p><strong>Response:</strong> ${data.response}</p>`;
-
+            const coinDisplay = document.getElementById('coins');
+            coinDisplay.innerText = `💰 Coins: ${data.coins}`;
             fetchNextQuestion();
         });
 });

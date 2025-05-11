@@ -239,11 +239,16 @@ def correct_code():
 def forgetting():
     if 'email' not in session:
         return redirect('/login')
+    email = session['email']
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT coins FROM users WHERE email = %s", (email,))
+    user = cursor.fetchone()
+    coins = user['coins']
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT id FROM users WHERE email = %s", (session['email'],))
     user = cursor.fetchone()
     user_id = user['id']
-    return render_template("forgetting.html", user_id=user_id)
+    return render_template("forgetting.html", user_id=user_id, coins=coins)
 
 @app.route('/get_next_question', methods=['POST'])
 def get_next_question_route():
@@ -267,9 +272,31 @@ def submit_answer_route():
     code = data['code']
 
     score, response = submit_answer(user_id, question_id, question_text, concept, code)
+    
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    if score > 0.8:
+        cursor.execute("""
+                        UPDATE users 
+                        SET coins = coins + 2
+                        WHERE id = %s
+                    """, (user_id,))
+        mysql.connection.commit()
+    elif score > 0.5 and score <= 0.8:
+        cursor.execute("""
+                        UPDATE users 
+                        SET coins = coins + 1
+                        WHERE id = %s
+                    """, (user_id,))
+        mysql.connection.commit()
+    
+    cursor.execute("SELECT coins FROM users WHERE id = %s", (user_id,))
+    user = cursor.fetchone()
+    coins = user['coins']
+    
     return jsonify({
         'score': score,
-        'response': response
+        'response': response,
+        'coins': coins
     })
 
 if __name__ == "__main__":
