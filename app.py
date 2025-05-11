@@ -8,6 +8,7 @@ from symbolic_debugger import analyze_script, get_debugged_code
 import os
 from datetime import datetime, timedelta
 import pytz
+from forgetting_graph import get_next_question,submit_answer
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
@@ -38,6 +39,8 @@ ALL_MILESTONES = {
         25: "Bug Slayer"
     }
 }
+
+concepts = ['Arrays', 'Strings', 'Recursion']
 
 def assign_badges(email):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -136,8 +139,20 @@ def register():
             cursor.execute(
                 'INSERT INTO users (email, password) VALUES (%s, %s)',
                 (email, hashed_password)
-            )   
+            ) 
             mysql.connection.commit()
+            cursor.execute(
+                'SELECT id from users WHERE email = %s',
+                (email,)
+            )  
+            user = cursor.fetchone()
+            user_id = user['id']
+            for concept in concepts:
+                cursor.execute(
+                    'INSERT INTO user_retention (user_id, concept, retention_score) VALUES (%s, %s, %s)',
+                    (user_id,concept,0.5)
+                )
+                mysql.connection.commit()
             return render_template('login.html',error=error)
 
     return render_template('register.html', error=error)
@@ -219,6 +234,43 @@ def correct_code():
         return jsonify({'corrected_code': corrected_code})
     except Exception as e:
         return jsonify({'error': f"Error in code correction: {str(e)}"})
+
+@app.route('/forgetting')
+def forgetting():
+    if 'email' not in session:
+        return redirect('/login')
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT id FROM users WHERE email = %s", (session['email'],))
+    user = cursor.fetchone()
+    user_id = user['id']
+    return render_template("forgetting.html", user_id=user_id)
+
+@app.route('/get_next_question', methods=['POST'])
+def get_next_question_route():
+    data = request.get_json()
+    user_id = data['user_id']
+    question_id, question_text, concept = get_next_question(user_id)
+    return jsonify({
+        'user_id': user_id,
+        'question_id': question_id,
+        'question_text': question_text,
+        'concept': concept
+    })
+
+@app.route('/submit_answer', methods=['POST'])
+def submit_answer_route():
+    data = request.get_json()
+    user_id = data['user_id']
+    question_id = data['question_id']
+    question_text = data['question_text']
+    concept = data['concept']
+    code = data['code']
+
+    score, response = submit_answer(user_id, question_id, question_text, concept, code)
+    return jsonify({
+        'score': score,
+        'response': response
+    })
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

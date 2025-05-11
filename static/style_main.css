@@ -82,6 +82,14 @@ h1 {
     background-color: #165f47;
 }
 
+.level-button#forgetting-btn {
+    background-color: #bd4ca4;
+}
+
+.level-button#forgetting-btn:hover {
+    background-color: #722862;
+}
+
 .coin-display {
     position: fixed;
     top: 20px;

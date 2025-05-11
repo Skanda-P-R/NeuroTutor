@@ -76,52 +76,12 @@ For **Windows** users, follow the below steps:<br>
 4. In the ```User Variables``` tab, click on ```New```, and set the "Variable Name" as ```sql_username``` and "Variable Value" as ```your_mysql_username```.
 5. Create two more variables for ```sql_password``` and ```groq_api```.
 ### 4. Configure MySQL
-Login to your MySQL server, and execute these queries.
-```
-CREATE DATABASE neuro_tutor_db;
-
-USE neuro_tutor_db;
-
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    questions_debugged INT DEFAULT 0,
-    codes_corrected INT DEFAULT 0,
-    coins INT DEFAULT 0,
-    last_coin_award DATETIME DEFAULT NULL
-);
-
-CREATE TABLE badges (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    description TEXT DEFAULT NULL,
-    icon_filename VARCHAR(255) DEFAULT NULL
-);
-
-CREATE TABLE user_badges (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    badge_id INT NOT NULL,
-    awarded_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (badge_id) REFERENCES badges(id) ON DELETE CASCADE,
-    UNIQUE(user_id, badge_id)  -- Ensures a user cannot be awarded the same badge multiple times
-);
-
-INSERT INTO badges (id, name, description, icon_filename) VALUES
-(1, 'Code Fixer I', 'Corrected 5 code submissions', 'code_fixer_1_icon.png'),
-(2, 'Code Fixer II', 'Corrected 10 code submissions', 'code_fixer_2_icon.png'),
-(3, 'Syntax Surgeon', 'Corrected 25 code submissions', 'syntax_surgeon.png'),
-(4, 'First Login', 'Awarded for the first login', 'first_login_icon.png'),
-(5, 'Coin Collector I', 'Awarded after collecting 5 coins', 'coin_collector_1_icon.png'),
-(6, 'Coin Collector II', 'Awarded after collecting 10 coins', 'coin_collector_2_icon.png'),
-(7, 'Coin Collector III', 'Awarded after collecting 25 coins', 'coin_collector_3_icon.png'),
-(8, 'First Debug', 'Debugged your first question', 'debug_first_icon.png'),
-(9, 'Debug Mastery I', 'Debugged 5 questions', 'debug_mastery_1_icon.png'),
-(10, 'Debug Mastery II', 'Debugged 10 questions', 'debug_mastery_2_icon.png'),
-(11, 'Bug Slayer', 'Debugged 25 questions', 'bug_slayer_icon.png');
-```
+- Run the XAMPP Control Panel application, and Click on "Start" button for Apache and MySQL Module.
+- Then Click on the "Admin" button for MySQL Module. A page with URL http://localhost/phpmyadmin/ will open, here follow the below steps:
+  - Click on "Databases" in the top toolbar
+  - In the "Create database" input section, type the "Database name" as ```neuro_tutor_db```, then click the "Create" button.
+  - Then, the newly created database opens up. NOw in the top toolbar, select the "Import" button, then click on "Choose File", then navigate to this cloned repository, and select the ```neuro_tutor_db.sql``` file.
+  - Then scroll all the way below, and Click on "Import" button. Now, all the tables would be successly imported.
 ### 5. Run the App
 ```
 python app.py

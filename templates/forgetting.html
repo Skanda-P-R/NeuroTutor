@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Solver using Forgetting Graph</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_forget.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
+
+<body data-user-id="{{ user_id }}">
+    <div class="container">
+        <div class="editor-container">
+            <h1><a href="/">Code Solver using Forgetting Graph</a></h1>
+            <div style="margin-bottom: 15px;">
+                <a href="{{ url_for('index') }}">
+                    <button class="button level-button" id="home-btn"><i class="fa fa-home"></i>
+                        Home</button>
+                </a>
+            </div>
+            <div class="output-container">
+                <div class="output-header">
+                    <div class="output-title">Question</div>
+                </div>
+                <div class="tab-content active" id="question-content">
+                    <div id="question-output" class="output-text">Question will appear here...</div>
+                </div>
+            </div>
+            <div class="editor-header">
+                <div class="editor-title">Code Editor</div>
+                <div class="button-container">
+                    <button class="button" id="submit-code">
+                        <i class="fa fa-magic"></i> SUBMIT CODE
+                    </button>
+                </div>
+            </div>
+            <textarea id="code-editor">
+# Enter your Python code here
+def example_function():
+    print("Hello, world!")
+            </textarea>
+        </div>
+
+        <div id="submission-feedback" class="output-text" style="margin-top: 20px; font-weight: bold;"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="{{ url_for('static', filename='script_forget.js') }}"></script>
+
+</body>
+
+</html>

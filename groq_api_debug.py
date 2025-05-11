@@ -80,3 +80,39 @@ def send_to_groq(code,error):
     )
 
     return chat_completion.choices[0].message.content
+
+def get_score(question,code):
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": '''
+You are a strict programming evaluator. You will be given:
+1. A programming question that describes a problem to be solved.
+2. A code snippet written by a user to solve that problem.
+
+Your tasks:
+1. Carefully analyze whether the code solves the problem correctly.
+2. Think step-by-step through edge cases and possible inputs.
+3. Identify any logic errors, missing validations, or limitations.
+4. Do not assume correctness unless it is clearly demonstrated.
+
+Give a normalized score between 0.0 and 1.0 based on correctness of the code.
+
+Use this format in your response:
+Analysis:
+[Your reasoning — step-by-step explanation, test cases considered, mistakes if any]
+Score: [X.X]
+
+Do not give high scores unless fully justified by analysis.
+'''
+            },
+            {
+                "role": "user",
+                "content": "Programming Question: " + question + "\n\nCode Snippet: " + code,
+            }
+        ],
+        model="meta-llama/llama-4-maverick-17b-128e-instruct",
+    )
+
+    return chat_completion.choices[0].message.content
