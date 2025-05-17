@@ -10,10 +10,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style_code.css') }}">
     <link rel="stylesheet" type="text/css"
         href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-                <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
 
 </head>
 
@@ -30,6 +29,12 @@
             <div class="editor-header">
                 <div class="editor-title">Code Editor</div>
                 <div class="button-container">
+                    <label for="upload-image" class="button level-button" id="upload-btn">
+                        <i class="fa fa-upload"></i> Upload Code Image
+                    </label>
+
+                    <input type="file" id="upload-image" accept="image/*" style="display: none;">
+                    <p id="ocr-status" style="margin-top: 10px; font-style: italic; color: #e80f0f;"></p>
                     <button class="button" id="check-errors">
                         <i class="fa fa-check"></i> CHECK ERRORS
                     </button>
@@ -58,6 +63,7 @@ cout<<"Hello" //No semicolon
     <script src="{{ url_for('static', filename='script_code_cpp.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
 </body>
 
 </html>

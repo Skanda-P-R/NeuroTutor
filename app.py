@@ -10,8 +10,25 @@ from datetime import datetime, timedelta
 import pytz
 from forgetting_graph import get_next_question,submit_answer
 import json
+from PIL import Image
+import pytesseract
 
 app = Flask(__name__)
+
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
+
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+def extract_code_from_image(image_path):
+    img = Image.open(image_path)
+    text = pytesseract.image_to_string(img, config='--psm 6')
+    return text
+
 app.secret_key = secrets.token_hex(16)
 
 app.config['MYSQL_HOST'] = 'localhost'
@@ -403,6 +420,22 @@ def get_attempted_questions():
 
     return jsonify({'attempted_questions': attempts})
 
+@app.route('/extract-code', methods=['POST'])
+def extract_code_api():
+    if 'code_image' not in request.files:
+        return jsonify({'success': False, 'error': 'No file uploaded'})
+
+    file = request.files['code_image']
+    if file and allowed_file(file.filename):
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(filepath)
+        try:
+            extracted_code = extract_code_from_image(filepath)
+            return jsonify({'success': True, 'extracted_code': extracted_code})
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+
+    return jsonify({'success': False, 'error': 'Invalid file'})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

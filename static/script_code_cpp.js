@@ -49,69 +49,25 @@ document.getElementById('check-errors').addEventListener('click', async () => {
     }
 });
 
-document.getElementById('correct-code').addEventListener('click', async () => {
-    const code = codeEditor.getValue();
-    const correctedOutput = document.getElementById('corrected-output');
-    correctedOutput.textContent = 'Generating corrected code...';
+document.getElementById('upload-image').addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    const status = document.getElementById('ocr-status');
+    if (!file) return;
+
+    status.textContent = 'Reading image and extracting text...';
 
     try {
-        const response = await fetch('/correct_code_cpp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                code: code,
-                errors: currentErrors.join("\n")
-            }),
+        const { data: { text } } = await Tesseract.recognize(file, 'eng', {
+            logger: m => {
+                if (m.status === 'recognizing text') {
+                    status.textContent = `Processing: ${Math.round(m.progress * 100)}%`;
+                }
+            }
         });
 
-        const data = await response.json();
-
-        if (data.error) {
-            correctedOutput.textContent = data.error;
-        } else {
-            if (data.corrected_code) {
-                const match = data.corrected_code.match(/```(?:cpp)?\s*([\s\S]*?)```/i);
-                const rawCode = match ? match[1].trim() : '';
-                const explanation = data.corrected_code.replace(/```(?:cpp)?[\s\S]*?```/i, '').trim();
-                const escapedCode = rawCode
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;");
-
-                correctedOutput.innerHTML = `
-                <p>Here's the corrected code:</p>
-                <textarea id="corrected-code-editor">${escapedCode}</textarea>
-                <p><strong>Explanation:</strong></p>
-                <p>${explanation.replace(/\n/g, '<br>')}</p>
-            `;
-
-                document.querySelector('.tab[data-tab="corrected"]').click();
-
-                setTimeout(() => {
-                    const editor = CodeMirror.fromTextArea(
-                        document.getElementById('corrected-code-editor'), {
-                        value: rawCode,
-                        mode: 'text/x-c++src',
-                        theme: 'default', // or 'monokai'
-                        lineNumbers: true,
-                        readOnly: true,
-                        tabSize: 4,
-                        indentUnit: 4,
-                        viewportMargin: Infinity,
-                        autoRefresh: true
-                    });
-                    const lineCount = editor.lineCount();
-                    const lineHeight = 20;
-                    editor.setSize(null, `${lineCount * lineHeight + 10}px`);
-                }, 0);
-            } else {
-                correctedOutput.textContent = 'No corrections needed.';
-            }
-        }
-        document.querySelector('.tab[data-tab="corrected"]').click();
+        status.textContent = 'Extraction complete!';
+        codeEditor.setValue(text.trim());
     } catch (error) {
-        correctedOutput.textContent = `Error: ${error.message}`;
+        status.textContent = `OCR failed: ${error.message}`;
     }
 });
