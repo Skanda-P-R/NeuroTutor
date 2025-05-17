@@ -179,3 +179,8 @@ h1 {
         width: 80%;
     }
 }
+
+#report-btn {
+    background-color: #092ba4; /* tomato red */
+    color: white;
+}

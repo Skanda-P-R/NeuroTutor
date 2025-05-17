@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Retention Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #chart-container {
+            width: 80%;
+            max-width: 700px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Concept Retention Report</h1>
+     <div style="margin-bottom: 15px;">
+                <a href="{{ url_for('index') }}">
+                    <button class="button level-button" id="home-btn" style="background-color: red; color: white;">
+            <i class="fa fa-home"></i> Home
+        </button>
+                </a>
+            </div>
+    <div id="chart-container">
+        <canvas id="retentionChart"></canvas>
+    </div>
+
+    <script>
+        const concepts = JSON.parse('{{ concepts | safe }}');
+        const scores = JSON.parse('{{ scores | safe }}');
+
+        const ctx = document.getElementById('retentionChart').getContext('2d');
+
+        const retentionChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: concepts,
+                datasets: [{
+                    label: 'Retention Score',
+                    data: scores,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 1,
+                        title: {
+                            display: true,
+                            text: 'Retention Score'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Concepts'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

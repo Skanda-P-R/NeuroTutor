@@ -69,7 +69,7 @@ def send_to_groq(code,error):
         messages=[
             {
                 "role": "system",
-                "content": "you are a code debugger system, which gives only the corrected code based on the user code and the error list supplied."
+                "content": "You are a Code Debugger System, which gives only the Corrected Code, and what changes are made to the Corrected Code, based on the user code and the error list supplied."
             },
             {
                 "role": "user",
@@ -110,6 +110,23 @@ Do not give high scores unless fully justified by analysis.
             {
                 "role": "user",
                 "content": "Programming Question: " + question + "\n\nCode Snippet: " + code,
+            }
+        ],
+        model="meta-llama/llama-4-maverick-17b-128e-instruct",
+    )
+
+    return chat_completion.choices[0].message.content
+
+def get_neat_errors(errors):
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an AI which takes in the list of Errors, and give that errors in a interactive way, point wise, so that any learner who doesn't know anything understands his errors in his code."
+            },
+            {
+                "role": "user",
+                "content": f"Errors: {errors}",
             }
         ],
         model="meta-llama/llama-4-maverick-17b-128e-instruct",

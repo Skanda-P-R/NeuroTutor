@@ -3,12 +3,13 @@ import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
-from groq_api_debug import get_code, compare
-from symbolic_debugger import analyze_script, get_debugged_code
+from groq_api_debug import get_code, compare, get_neat_errors
+from symbolic_debugger import analyze_script, get_debugged_code, analyze_script_cpp, get_debugged_code_cpp
 import os
 from datetime import datetime, timedelta
 import pytz
 from forgetting_graph import get_next_question,submit_answer
+import json
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
@@ -37,7 +38,21 @@ ALL_MILESTONES = {
         5: "Debug Mastery I",
         10: "Debug Mastery II",
         25: "Bug Slayer"
-    }
+    },
+    "retention_scores": {
+        "Arrays": {
+            0.6: "Array Builder",
+            0.8: "Array Master"
+        },
+        "Strings": {
+            0.6: "String Builder",
+            0.8: "String Master"
+        },
+        "Recursion": {
+            0.6: "Recursion Builder",
+            0.8: "Recursion Master"
+}
+}
 }
 
 concepts = ['Arrays', 'Strings', 'Recursion']
@@ -47,19 +62,16 @@ def assign_badges(email):
     cursor.execute("SELECT id, questions_debugged, codes_corrected, coins FROM users WHERE email = %s", (email,))
     user = cursor.fetchone()
     user_id = user['id']
-    codes_corrected = user['codes_corrected']
-    questions_debugged = user.get('questions_debugged', 0)
-    coins = user['coins']
     badge_to_show = None
 
     for field, milestones in ALL_MILESTONES.items():
-        current_value = user[field]
+        if field == "retention_scores":
+            continue
+        current_value = user.get(field, 0)
         for milestone, badge_name in milestones.items():
             if current_value >= milestone:
-                cursor.execute("SELECT id FROM badges WHERE name = %s", (badge_name,))
                 cursor.execute("SELECT id, name, description, icon_filename FROM badges WHERE name = %s", (badge_name,))
                 badge = cursor.fetchone()
-
                 if badge:
                     badge_id = badge['id']
                     cursor.execute("SELECT * FROM user_badges WHERE user_id = %s AND badge_id = %s", (user_id, badge_id))
@@ -71,6 +83,30 @@ def assign_badges(email):
                         break
         if badge_to_show:
             break
+
+    cursor.execute("SELECT concept, retention_score FROM user_retention WHERE user_id = %s", (user_id,))
+    retention_data = cursor.fetchall()
+
+    for row in retention_data:
+        concept = row['concept']
+        score = float(row['retention_score'])
+        if concept in ALL_MILESTONES["retention_scores"]:
+            for threshold, badge_name in sorted(ALL_MILESTONES["retention_scores"][concept].items()):
+                if score >= threshold:
+                    cursor.execute("SELECT id, name, description, icon_filename FROM badges WHERE name = %s", (badge_name,))
+                    badge = cursor.fetchone()
+                    if badge:
+                        badge_id = badge['id']
+                        cursor.execute("SELECT * FROM user_badges WHERE user_id = %s AND badge_id = %s", (user_id, badge_id))
+                        if not cursor.fetchone():
+                            cursor.execute("INSERT INTO user_badges (user_id, badge_id, awarded_on) VALUES (%s, %s, NOW())",
+                                           (user_id, badge_id))
+                            mysql.connection.commit()
+                            badge_to_show = badge
+                            break
+        if badge_to_show:
+            break
+
     return badge_to_show
 
 @app.route('/')
@@ -97,6 +133,7 @@ def login():
 
         if user and check_password_hash(user['password'], password):
             session['email'] = user['email']
+            session['user_id'] = user['id']
 
             ist = pytz.timezone('Asia/Kolkata')
             now = datetime.now(ist)
@@ -174,6 +211,12 @@ def debugger_challenge():
         return render_template("debug.html")
     return redirect('/login')
 
+@app.route('/code-checker-cpp')
+def code_checker_cpp():
+    if 'email' in session:
+        return render_template("code_cpp.html")
+    return redirect('/login')
+
 @app.route('/my-badges')
 def my_badges():
     if 'email' in session:
@@ -219,7 +262,15 @@ def check_solution():
 def check_errors():
     code_text = request.json.get('code', '')
     errors = analyze_script(code_text)
-    return jsonify({'errors': errors})
+    response = get_neat_errors(errors)
+    return jsonify({'errors': [response,]})
+
+@app.route('/check_errors_cpp', methods=['POST'])
+def check_errors_cpp():
+    code_text = request.json.get('code', '')
+    errors = analyze_script_cpp(code_text)
+    responce = get_neat_errors(errors)
+    return jsonify({'errors': [responce,]})
 
 @app.route('/correct_code', methods=['POST'])
 def correct_code():
@@ -227,6 +278,20 @@ def correct_code():
     errors = request.json.get('errors', [])
     try:
         corrected_code = get_debugged_code(errors, code_text)
+        if 'email' in session:
+            cursor = mysql.connection.cursor()
+            cursor.execute("UPDATE users SET codes_corrected = codes_corrected + 1 WHERE email = %s", (session['email'],))
+            mysql.connection.commit()
+        return jsonify({'corrected_code': corrected_code})
+    except Exception as e:
+        return jsonify({'error': f"Error in code correction: {str(e)}"})
+
+@app.route('/correct_code_cpp', methods=['POST'])
+def correct_code_cpp():
+    code_text = request.json.get('code', '')
+    errors = request.json.get('errors', [])
+    try:
+        corrected_code = get_debugged_code_cpp(errors, code_text)
         if 'email' in session:
             cursor = mysql.connection.cursor()
             cursor.execute("UPDATE users SET codes_corrected = codes_corrected + 1 WHERE email = %s", (session['email'],))
@@ -298,6 +363,25 @@ def submit_answer_route():
         'response': response,
         'coins': coins
     })
+
+@app.route('/report')
+def report():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    data = get_user_retention(user_id)
+    concepts = [row[0] for row in data]
+    scores = [row[1] for row in data]
+
+    return render_template('report.html', concepts=json.dumps(concepts), scores=json.dumps(scores))
+
+def get_user_retention(user_id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT concept, retention_score FROM user_retention WHERE user_id = %s", (user_id,))
+    data = cursor.fetchall()
+    cursor.close()
+    return data
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
