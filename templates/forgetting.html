@@ -16,40 +16,50 @@
     <div class="coin-display" id="coins">
         💰 Coins: {{ coins }}
     </div>
+
     <div class="container">
-        <div class="editor-container">
-            <h1><a href="/">Code Solver using Forgetting Graph</a></h1>
-            <div style="margin-bottom: 15px;">
-                <a href="{{ url_for('index') }}">
-                    <button class="button level-button" id="home-btn"><i class="fa fa-home"></i>
-                        Home</button>
-                </a>
-            </div>
-            <div class="output-container">
-                <div class="output-header">
-                    <div class="output-title">Question</div>
+        <div class="sidebar">
+            <div class="sidebar-title">📋 Attempted Questions</div>
+            <div id="question-list" class="question-list"></div>
+        </div>
+
+        <div class="main-content">
+            <div class="editor-container">
+                <h1><a href="/">Code Solver using Forgetting Graph</a></h1>
+                <div style="margin-bottom: 15px;">
+                    <a href="{{ url_for('index') }}">
+                        <button class="button level-button" id="home-btn"><i class="fa fa-home"></i> Home</button>
+                    </a>
                 </div>
-                <div class="tab-content active" id="question-content">
-                    <div id="question-output" class="output-text">Question will appear here...</div>
+                <div class="output-container">
+                    <div class="output-header">
+                        <div class="output-title">Question</div>
+                    </div>
+                    <div class="tab-content active" id="question-content">
+                        <div id="question-output" class="output-text">Question will appear here...</div>
+                    </div>
                 </div>
-            </div>
-            <div class="editor-header">
-                <div class="editor-title">Code Editor</div>
-                <div class="button-container">
-                    <button class="button" id="submit-code">
-                        <i class="fa fa-magic"></i> SUBMIT CODE
-                    </button>
+                <div class="editor-header">
+                    <div class="editor-title">Code Editor</div>
+                    <div class="button-container">
+                        <button class="button" id="submit-code">
+                            <i class="fa fa-magic"></i> SUBMIT CODE
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <textarea id="code-editor">
+                <textarea id="code-editor">
 # Enter your Python code here
 def example_function():
     print("Hello, world!")
             </textarea>
-        </div>
+            </div>
 
-        <div id="submission-feedback" class="output-text" style="margin-top: 20px; font-weight: bold;"></div>
+            <div class="feedback-panel" id="submission-feedback">
+                Feedback will appear here...
+            </div>
+        </div>
     </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>

@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style_code.css') }}">
     <link rel="stylesheet" type="text/css"
         href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+                <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
 </head>
 
 <body>
@@ -28,9 +33,6 @@
                     <button class="button" id="check-errors">
                         <i class="fa fa-check"></i> CHECK ERRORS
                     </button>
-                    <button class="button" id="correct-code">
-                        <i class="fa fa-magic"></i> CORRECT CODE
-                    </button>
                 </div>
             </div>
             <textarea id="code-editor">
@@ -44,14 +46,10 @@ cout<<"Hello" //No semicolon
                 <div class="output-title">Output</div>
                 <div class="tabs">
                     <div class="tab active" data-tab="errors">Errors</div>
-                    <div class="tab" data-tab="corrected">Corrected Code</div>
                 </div>
             </div>
             <div class="tab-content active" id="errors-content">
                 <div id="errors-output" class="output-text">Errors will appear here...</div>
-            </div>
-            <div class="tab-content" id="corrected-content">
-                <div id="corrected-output" class="output-text">Corrected code will appear here...</div>
             </div>
         </div>
     </div>
@@ -59,6 +57,7 @@ cout<<"Hello" //No semicolon
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="{{ url_for('static', filename='script_code_cpp.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 
 </html>

@@ -383,5 +383,26 @@ def get_user_retention(user_id):
     cursor.close()
     return data
 
+@app.route('/get_attempted_questions', methods=['POST'])
+def get_attempted_questions():
+    data = request.get_json()
+    user_id = data.get('user_id')
+
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("""
+        SELECT ua.question_id, q.question_text, q.concept, ua.code_submitted, 
+               ua.understanding_score, ua.attempt_time
+        FROM user_attempts ua
+        JOIN questions q ON ua.question_id = q.question_id
+        WHERE ua.user_id = %s
+        ORDER BY ua.attempt_time DESC
+    """, (user_id,))
+    
+    attempts = cursor.fetchall()
+    cursor.close()
+
+    return jsonify({'attempted_questions': attempts})
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

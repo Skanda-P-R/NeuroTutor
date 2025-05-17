@@ -33,6 +33,32 @@ function fetchNextQuestion() {
         });
 }
 
+function fetchAttemptedQuestions() {
+    fetch("/get_attempted_questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId })
+    })
+        .then(res => res.json())
+        .then(data => {
+            const list = document.getElementById("question-list");
+            list.innerHTML = ""; 
+
+            data.attempted_questions.forEach(entry => {
+                const item = document.createElement("div");
+                item.className = "question-item";
+                item.innerHTML = `Q${entry.question_id} - ${entry.concept}: Score ${entry.understanding_score}`;
+                item.addEventListener("click", () => {
+                    currentQuestionId = entry.question_id;
+                    currentQuestionText = entry.question_text;
+                    currentConcept = entry.concept;
+                    questionOutput.textContent = entry.question_text;
+                });
+                list.appendChild(item);
+            });
+        });
+}
+
 submitButton.addEventListener("click", () => {
     const userCode = editor.getValue();
 
@@ -57,4 +83,7 @@ submitButton.addEventListener("click", () => {
         });
 });
 
-window.onload = fetchNextQuestion;
+window.onload = () => {
+    fetchNextQuestion();
+    fetchAttemptedQuestions();
+};

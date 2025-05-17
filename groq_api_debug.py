@@ -122,7 +122,7 @@ def get_neat_errors(errors):
         messages=[
             {
                 "role": "system",
-                "content": "You are an AI which takes in the list of Errors, and give that errors in a interactive way, point wise, so that any learner who doesn't know anything understands his errors in his code."
+                "content": "You are an AI which takes in the list of Errors, and give that errors in a interactive way, point wise, so that any learner who doesn't know anything understands his errors in his code. Also give the corrected code, telling about the changes made."
             },
             {
                 "role": "user",

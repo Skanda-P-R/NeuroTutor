@@ -41,7 +41,7 @@ document.getElementById('check-errors').addEventListener('click', async () => {
         if (currentErrors.length === 0) {
             errorsOutput.textContent = 'No errors found!';
         } else {
-            errorsOutput.textContent = currentErrors.join("\n");
+            errorsOutput.innerHTML = marked.parse(currentErrors.join("\n"));
         }
         document.querySelector('.tab[data-tab="errors"]').click();
     } catch (error) {
