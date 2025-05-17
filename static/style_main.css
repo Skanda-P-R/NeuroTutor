@@ -58,6 +58,14 @@ h1 {
     background-color: #3e8e41;
 }
 
+.level-button#code-checker-cpp-btn {
+    background-color: #a5620a;
+}
+
+.level-button#code-checker-cpp-btn:hover {
+    background-color: #834e08;
+}
+
 .level-button#debugger-btn {
     background-color: #ff9800;
 }

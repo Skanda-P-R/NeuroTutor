@@ -76,7 +76,7 @@ submitButton.addEventListener("click", () => {
         .then(res => res.json())
         .then(data => {
             const feedbackEl = document.getElementById("submission-feedback");
-            feedbackEl.innerHTML = `<p>💡 <strong>Score:</strong> ${data.score}</p><p><strong>Response:</strong> ${data.response}</p>`;
+            feedbackEl.innerHTML = `<p>💡 <strong>Score:</strong> ${data.score}</p><p><strong>Response:</strong> ${marked.parse(data.response)}</p>`;
             const coinDisplay = document.getElementById('coins');
             coinDisplay.innerText = `💰 Coins: ${data.coins}`;
             fetchNextQuestion();

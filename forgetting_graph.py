@@ -67,7 +67,7 @@ def submit_answer(user_id, question_id, question_text, concept, code):
 
     cursor.execute('''
         UPDATE user_retention
-        SET retention_score = (retention_score * 0.7 + %s * 0.3),
+        SET retention_score = (retention_score + (1 - retention_score) * %s),
             last_attempt = NOW()
         WHERE user_id = %s AND concept = %s;
     ''', (score, user_id, concept))

@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style_forget.css') }}">
     <link rel="stylesheet" type="text/css"
         href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
 </head>
 
 <body data-user-id="{{ user_id }}">
@@ -64,7 +68,8 @@ def example_function():
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
     <script src="{{ url_for('static', filename='script_forget.js') }}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
 </body>
 
 </html>
