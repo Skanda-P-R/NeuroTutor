@@ -24,94 +24,52 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 document.getElementById('check-errors').addEventListener('click', async () => {
     const code = codeEditor.getValue();
+
     const errorsOutput = document.getElementById('errors-output');
-    errorsOutput.textContent = 'Checking for errors...';
+    const correctedOutput = document.getElementById('corrected-output');
+
+    const errorSpinner = document.getElementById("error-spinner");
+    const spinnerText = document.getElementById("spinner_text");
+
+    const correctedSpinner = document.querySelector('#corrected-output .spinner');
+
+    spinnerText.textContent = "Checking for errors...";
+    spinnerText.style.display = "inline";
+    errorSpinner.style.display = "inline-block";
+
+    correctedOutput.textContent = 'Generating corrected code...';
+    if (correctedSpinner) correctedSpinner.style.display = "inline-block";
+
     try {
         const response = await fetch('/check_errors', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ code: code }),
+            body: JSON.stringify({ code }),
         });
 
         const data = await response.json();
-        currentErrors = data.errors || [];
+        const corrected_code = data.correct_code || [];
+        const errors = data.errors_from_symbolic || [];
 
-        if (currentErrors.length === 0) {
-            errorsOutput.textContent = 'No errors found!';
+        if (errors.length === 0) {
+            spinnerText.textContent = 'No errors found!';
+            correctedOutput.textContent = 'No correction of code required...';
         } else {
-            errorsOutput.innerHTML = marked.parse(currentErrors.join("\n"));
+            spinnerText.style.display = "none";
+            errorSpinner.style.display = "none";
+
+            errorsOutput.innerHTML = marked.parse(errors.join("\n"));
+            correctedOutput.innerHTML = marked.parse(corrected_code.join("\n"));
         }
+
         document.querySelector('.tab[data-tab="errors"]').click();
     } catch (error) {
-        errorsOutput.textContent = `Error: ${error.message}`;
-    }
-});
-
-document.getElementById('correct-code').addEventListener('click', async () => {
-    const code = codeEditor.getValue();
-    const correctedOutput = document.getElementById('corrected-output');
-    correctedOutput.textContent = 'Generating corrected code...';
-
-    try {
-        const response = await fetch('/correct_code', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                code: code,
-                errors: currentErrors.join("\n")
-            }),
-        });
-
-        const data = await response.json();
-
-        if (data.error) {
-            correctedOutput.textContent = data.error;
-        } else {
-            if (data.corrected_code) {
-                const match = data.corrected_code.match(/```(?:python)?\s*([\s\S]*?)```/i);
-                const rawCode = match ? match[1].trim() : '';
-                const explanation = data.corrected_code.replace(/```(?:python)?[\s\S]*?```/i, '').trim();
-                const escapedCode = rawCode
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;");
-
-                correctedOutput.innerHTML = `
-                <p>Here's the corrected code:</p>
-                <textarea id="corrected-code-editor">${escapedCode}</textarea>
-                <p><strong>Explanation:</strong></p>
-                <p>${explanation.replace(/\n/g, '<br>')}</p>
-            `;
-
-                document.querySelector('.tab[data-tab="corrected"]').click();
-
-                setTimeout(() => {
-                    const editor = CodeMirror.fromTextArea(
-                        document.getElementById('corrected-code-editor'), {
-                        value: rawCode,
-                        mode: 'python',
-                        theme: 'default', // or 'monokai'
-                        lineNumbers: true,
-                        readOnly: true,
-                        tabSize: 4,
-                        indentUnit: 4,
-                        viewportMargin: Infinity,
-                        autoRefresh: true
-                    });
-                    const lineCount = editor.lineCount();
-                    const lineHeight = 20;
-                    editor.setSize(null, `${lineCount * lineHeight + 10}px`);
-                }, 0);
-            } else {
-                correctedOutput.textContent = 'No corrections needed.';
-            }
-        }
-        document.querySelector('.tab[data-tab="corrected"]').click();
-    } catch (error) {
+        spinnerText.textContent = `Error: ${error.message}`;
         correctedOutput.textContent = `Error: ${error.message}`;
+    } finally {
+        errorSpinner.style.display = "none";
+        if (correctedSpinner) correctedSpinner.style.display = "none";
     }
 });

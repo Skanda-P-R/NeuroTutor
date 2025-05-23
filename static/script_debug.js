@@ -15,40 +15,56 @@ let userEditor = CodeMirror.fromTextArea(document.getElementById("user-code-edit
 });
 
 async function loadCode(difficulty) {
-    const response = await fetch("/get_code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ difficulty })
-    });
-    const data = await response.json();
+    const loadSpinner = document.getElementById("load-spinner");
+    loadSpinner.style.display = "inline-block";
 
-    if (data.error) {
-        errorEditor.setValue(data.error);
-    } else if (data.code) {
-        const match = data.code.match(/```(?:python)?\s*([\s\S]*?)```/i);
-        const rawCode = match ? match[1].trim() : data.code.trim();
-        errorEditor.setValue(rawCode);
+    try{
+        const response = await fetch("/get_code", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ difficulty })
+        });
+        const data = await response.json();
 
-        const lineCount = errorEditor.lineCount();
-        const lineHeight = 20;
-        errorEditor.setSize(null, `${lineCount * lineHeight + 10}px`);
-    } else {
-        errorEditor.setValue("No error code");
+        if (data.error) {
+            errorEditor.setValue(data.error);
+        } else if (data.code) {
+            const match = data.code.match(/```(?:python)?\s*([\s\S]*?)```/i);
+            const rawCode = match ? match[1].trim() : data.code.trim();
+            errorEditor.setValue(rawCode);
+
+            const lineCount = errorEditor.lineCount();
+            const lineHeight = 20;
+            errorEditor.setSize(null, `${lineCount * lineHeight + 10}px`);
+        } else {
+            errorEditor.setValue("No error code");
+        }
+        userEditor.setValue("");
+        document.getElementById("result-display").textContent = "";
+    } catch (err) {
+        errorEditor.setValue("Error loading challenge.");
+    } finally {
+        loadSpinner.style.display = "none";
     }
-    userEditor.setValue("");
-    document.getElementById("result-display").textContent = "";
 }
 
 document.getElementById("submit-btn").addEventListener("click", async () => {
     const errorCode = errorEditor.getValue();
     const userCode = userEditor.getValue();
+    const submitSpinner = document.getElementById("submit-spinner");
+    submitSpinner.style.display = "inline-block";
+    try{
+        const response = await fetch("/check_solution", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ error_code: errorCode, user_code: userCode })
+        });
 
-    const response = await fetch("/check_solution", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ error_code: errorCode, user_code: userCode })
-    });
-
-    const result = await response.json();
-    document.getElementById("result-display").textContent = result.result;
+        const result = await response.json();
+        document.getElementById("result-display").innerHTML = marked.parse(result.result);
+    } catch (err) {
+        document.getElementById("result-display").textContent = "Submission failed.";
+    } finally {
+        submitSpinner.style.display = "none";
+    }
 });

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 11, 2025 at 01:46 PM
+-- Generation Time: May 22, 2025 at 07:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -49,7 +49,13 @@ INSERT INTO `badges` (`id`, `name`, `description`, `icon_filename`) VALUES
 (8, 'First Debug', 'Debugged your first question', 'debug_first_icon.png'),
 (9, 'Debug Mastery I', 'Debugged 5 questions', 'debug_mastery_1_icon.png'),
 (10, 'Debug Mastery II', 'Debugged 10 questions', 'debug_mastery_2_icon.png'),
-(11, 'Bug Slayer', 'Debugged 25 questions', 'bug_slayer_icon.png');
+(11, 'Bug Slayer', 'Debugged 25 questions', 'bug_slayer_icon.png'),
+(12, 'Array Builder', 'Awarded for achieving 0.6 retention in Arrays.', 'array_builder.png'),
+(13, 'Array Master', 'Awarded for achieving 0.8 retention in Arrays.', 'array_master.png'),
+(14, 'String Builder', 'Awarded for achieving 0.6 retention in Strings.', 'string_builder.png'),
+(15, 'String Master', 'Awarded for achieving 0.8 retention in Strings.', 'string_master.png'),
+(16, 'Recursion Builder', 'Awarded for achieving 0.6 retention in Recursion.', 'recursion_builder.png'),
+(17, 'Recursion Master', 'Awarded for achieving 0.8 retention in Recursion.', 'recursion_master.png');
 
 -- --------------------------------------------------------
 
@@ -186,7 +192,7 @@ ALTER TABLE `user_retention`
 -- AUTO_INCREMENT for table `badges`
 --
 ALTER TABLE `badges`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `questions`
@@ -204,7 +210,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_badges`
 --
 ALTER TABLE `user_badges`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- Constraints for dumped tables

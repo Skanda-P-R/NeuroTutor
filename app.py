@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from groq_api_debug import get_code, compare, get_neat_errors
-from symbolic_debugger import analyze_script, get_debugged_code, analyze_script_cpp, get_debugged_code_cpp
+from symbolic_debugger import analyze_script, analyze_script_cpp
 import os
 from datetime import datetime, timedelta
 import pytz
@@ -280,42 +280,24 @@ def check_errors():
     code_text = request.json.get('code', '')
     errors = analyze_script(code_text)
     response = get_neat_errors(errors)
-    return jsonify({'errors': [response,]})
+    if 'email' in session:
+            cursor = mysql.connection.cursor()
+            cursor.execute("UPDATE users SET codes_corrected = codes_corrected + 1 WHERE email = %s", (session['email'],))
+            mysql.connection.commit()
+    return jsonify({'correct_code': [response,],
+                    'errors_from_symbolic': errors})
 
 @app.route('/check_errors_cpp', methods=['POST'])
 def check_errors_cpp():
     code_text = request.json.get('code', '')
     errors = analyze_script_cpp(code_text)
-    responce = get_neat_errors(errors)
-    return jsonify({'errors': [responce,]})
-
-@app.route('/correct_code', methods=['POST'])
-def correct_code():
-    code_text = request.json.get('code', '')
-    errors = request.json.get('errors', [])
-    try:
-        corrected_code = get_debugged_code(errors, code_text)
-        if 'email' in session:
+    response = get_neat_errors(errors)
+    if 'email' in session:
             cursor = mysql.connection.cursor()
             cursor.execute("UPDATE users SET codes_corrected = codes_corrected + 1 WHERE email = %s", (session['email'],))
             mysql.connection.commit()
-        return jsonify({'corrected_code': corrected_code})
-    except Exception as e:
-        return jsonify({'error': f"Error in code correction: {str(e)}"})
-
-@app.route('/correct_code_cpp', methods=['POST'])
-def correct_code_cpp():
-    code_text = request.json.get('code', '')
-    errors = request.json.get('errors', [])
-    try:
-        corrected_code = get_debugged_code_cpp(errors, code_text)
-        if 'email' in session:
-            cursor = mysql.connection.cursor()
-            cursor.execute("UPDATE users SET codes_corrected = codes_corrected + 1 WHERE email = %s", (session['email'],))
-            mysql.connection.commit()
-        return jsonify({'corrected_code': corrected_code})
-    except Exception as e:
-        return jsonify({'error': f"Error in code correction: {str(e)}"})
+    return jsonify({'errors': [response,],
+                    'errors_from_symbolic': errors})
 
 @app.route('/forgetting')
 def forgetting():
@@ -326,7 +308,6 @@ def forgetting():
     cursor.execute("SELECT coins FROM users WHERE email = %s", (email,))
     user = cursor.fetchone()
     coins = user['coins']
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT id FROM users WHERE email = %s", (session['email'],))
     user = cursor.fetchone()
     user_id = user['id']
@@ -354,7 +335,6 @@ def submit_answer_route():
     code = data['code']
 
     score, response = submit_answer(user_id, question_id, question_text, concept, code)
-    
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     if score > 0.8:
         cursor.execute("""
@@ -370,11 +350,9 @@ def submit_answer_route():
                         WHERE id = %s
                     """, (user_id,))
         mysql.connection.commit()
-    
     cursor.execute("SELECT coins FROM users WHERE id = %s", (user_id,))
     user = cursor.fetchone()
     coins = user['coins']
-    
     return jsonify({
         'score': score,
         'response': response,
@@ -385,12 +363,10 @@ def submit_answer_route():
 def report():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-
     user_id = session['user_id']
     data = get_user_retention(user_id)
     concepts = [row[0] for row in data]
     scores = [row[1] for row in data]
-
     return render_template('report.html', concepts=json.dumps(concepts), scores=json.dumps(scores))
 
 def get_user_retention(user_id):
@@ -414,10 +390,8 @@ def get_attempted_questions():
         WHERE ua.user_id = %s
         ORDER BY ua.attempt_time DESC
     """, (user_id,))
-    
     attempts = cursor.fetchall()
     cursor.close()
-
     return jsonify({'attempted_questions': attempts})
 
 @app.route('/extract-code', methods=['POST'])

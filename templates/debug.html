@@ -29,6 +29,7 @@
             <button class="button level-button" id="hard-btn" onclick="loadCode('hard')"><i class="fa fa-fire"></i>
                 Hard</button>
         </div>
+        <div id="load-spinner" class="spinner" style="display: none; margin-top: 10px;"></div>
 
         <div class="editor-section">
             <h2>Error Code will appear here...</h2>
@@ -41,12 +42,16 @@
         </div>
 
         <button class="button submit-button" id="submit-btn"><i class="fa fa-paper-plane"></i> Submit</button>
+        <div style="margin-top: 10px;">
+            <div id="submit-spinner" class="spinner" style="display: none;"></div>
+        </div>
 
-        <div id="result-display"></div>
+        <div id="result-display" class="output-text"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="{{ url_for('static', filename='script_debug.js') }}"></script>
 </body>
 

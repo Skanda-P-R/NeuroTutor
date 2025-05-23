@@ -1,5 +1,4 @@
 import ast
-from groq_api_debug import send_to_groq
 from tree_sitter_language_pack import get_language, get_parser
 
 class SymbolicAnalyzer(ast.NodeVisitor):
@@ -134,9 +133,6 @@ def analyze_script(source_code):
         issues_arr.append(f" - Line: {e.text.strip()}" if e.text else "")
 
     return issues_arr
-
-def get_debugged_code(issues,source_code):
-    return send_to_groq(source_code,issues)
 
 cpp_language = get_language("cpp")
 parser = get_parser("cpp")
@@ -340,6 +336,3 @@ def analyze_script_cpp(source_code):
         for issue in issues:
             issues_arr.append(f" - {issue}")
     return issues_arr
-
-def get_debugged_code_cpp(errors,code):
-    return send_to_groq(code,errors)

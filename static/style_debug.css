@@ -102,9 +102,40 @@ h1 a {
     border: 1px solid #ddd;
 }
 
-#result-display {
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
+.output-text {
+    white-space: pre-wrap;
+}
+
+.output-text pre {
+    background-color: #272822;
+    color: #f8f8f2 !important;
+    padding: 10px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: Consolas, monospace;
+}
+
+.output-text code {
+    background-color: #eee;
+    color: #333;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-top: 3px solid #333;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

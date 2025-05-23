@@ -51,19 +51,28 @@ cout<<"Hello" //No semicolon
                 <div class="output-title">Output</div>
                 <div class="tabs">
                     <div class="tab active" data-tab="errors">Errors</div>
+                    <div class="tab" data-tab="corrected">Corrected Code</div>
                 </div>
             </div>
             <div class="tab-content active" id="errors-content">
-                <div id="errors-output" class="output-text">Errors will appear here...</div>
+                <div id="errors-output" class="output-text">
+                    <span id="spinner_text">Errors will appear here...</span>
+                    <span id="error-spinner" class="spinner" style="display: none;"></span>
+                </div>
+            </div>
+            <div class="tab-content" id="corrected-content">
+                <div id="corrected-output" class="output-text">Corrected code will appear here...</div>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
-    <script src="{{ url_for('static', filename='script_code_cpp.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+    <script src="{{ url_for('static', filename='script_code_cpp.js') }}"></script>
 </body>
 
 </html>

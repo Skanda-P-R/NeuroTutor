@@ -61,6 +61,11 @@ function fetchAttemptedQuestions() {
 
 submitButton.addEventListener("click", () => {
     const userCode = editor.getValue();
+    const feedbackText = document.getElementById("feedback-text");
+    const spinner = document.getElementById("feedback-spinner");
+
+    feedbackText.textContent = "Evaluating your code...";
+    spinner.style.display = "inline-block";
 
     fetch("/submit_answer", {
         method: "POST",
@@ -80,6 +85,9 @@ submitButton.addEventListener("click", () => {
             const coinDisplay = document.getElementById('coins');
             coinDisplay.innerText = `💰 Coins: ${data.coins}`;
             fetchNextQuestion();
+        })
+        .finally(() => {
+            spinner.style.display = "none";
         });
 });
 
