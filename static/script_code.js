@@ -73,3 +73,7 @@ document.getElementById('check-errors').addEventListener('click', async () => {
         if (correctedSpinner) correctedSpinner.style.display = "none";
     }
 });
+
+document.getElementById('refresh-btn').addEventListener('click', function () {
+        location.reload();
+    });

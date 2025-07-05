@@ -72,7 +72,7 @@ ALL_MILESTONES = {
 }
 }
 
-concepts = ['Arrays', 'Strings', 'Recursion']
+concepts = ['Arrays', 'Strings', 'Recursion', 'Linked Lists', 'Trees', 'Graphs', 'Dynamic Programming', 'Sorting & Searching']
 
 def assign_badges(email):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)

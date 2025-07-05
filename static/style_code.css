@@ -78,6 +78,14 @@ h1 a {
     background-color: #af3a23;
 }
 
+#refresh-btn {
+    background-color: #1d69b1;
+}
+
+#refresh-btn:hover {
+    background-color: #103c64;
+}
+
 #correct-code {
     background: linear-gradient(180deg, #44bbdd 0%, #30a5c6 65%, #129abc 100%);
 }

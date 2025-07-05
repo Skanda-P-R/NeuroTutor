@@ -95,3 +95,7 @@ window.onload = () => {
     fetchNextQuestion();
     fetchAttemptedQuestions();
 };
+
+document.getElementById('refresh-btn').addEventListener('click', function () {
+        location.reload();
+    });

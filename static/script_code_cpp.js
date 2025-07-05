@@ -96,3 +96,7 @@ document.getElementById('upload-image').addEventListener('change', async (event)
         status.textContent = `OCR failed: ${error.message}`;
     }
 });
+
+document.getElementById('refresh-btn').addEventListener('click', function () {
+        location.reload();
+    });
